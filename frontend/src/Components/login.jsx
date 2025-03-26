@@ -16,7 +16,7 @@ const Login = () => {
         console.log(values);
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/auth/login', values);
+            const response = await axios.post('http://localhost:3000/auth/login', values);
             console.log(response);
             if(response.status===201){
                 localStorage.setItem('token',response.data.token);

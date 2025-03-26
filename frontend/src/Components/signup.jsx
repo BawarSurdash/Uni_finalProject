@@ -17,7 +17,7 @@ const Signup = () => {
         console.log(values);
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/auth/signup', values);
+            const response = await axios.post('http://localhost:3000/auth/signup', values);
             console.log(response);
             if(response.status===201){
                 alert('Account created successfully!');
