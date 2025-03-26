@@ -64,4 +64,9 @@ try{
     res.status(500).json({ message: 'Internal server error' });
 }   
  })
+
+ router.get('/profile', (req, res) => {
+    res.json({ message: 'Profile route' });
+ });
+ 
 export default router;

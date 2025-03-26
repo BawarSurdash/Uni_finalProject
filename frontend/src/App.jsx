@@ -9,7 +9,6 @@ import Contact from './Components/contact'
 import Signup from './Components/signup'
 import Login from './Components/login'
 import Dashboard from './Components/dashboard'
-import Notification from './Components/notification'
 import Profile from './Components/profile'
 function App() {
 
@@ -28,7 +27,6 @@ function App() {
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/notification' element={<Notification />} />
             <Route path="/profile" element={<Profile />} />
        
 

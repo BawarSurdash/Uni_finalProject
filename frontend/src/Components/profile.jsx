@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "./navbar";
 import { useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -11,6 +12,13 @@ const Profile = () => {
     localStorage.removeItem('token');
     navigate('/login');
   };
+  
+
+  const tabs = [
+    { id: "personal", label: "Personal Information", icon: "👤" },
+    { id: "notifications", label: "Notifications", icon: "🔔" },
+    { id: "history", label: "History", icon: "📋" },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
@@ -31,27 +39,53 @@ const Profile = () => {
           </button>
         </div>
         
-        {/* Tabs */}
-        <div className="flex justify-center space-x-4 border-b pb-2 mb-6">
-          {[
-            { id: "personal", label: "Personal Information" },
-            { id: "notifications", label: "Notifications" },
-            { id: "history", label: "History" },
-          ].map((tab) => (
+        {/* Enhanced Tabs */}
+        <div className="relative flex justify-center space-x-1 border-b pb-2 mb-6">
+          {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition ${
-                activeTab === tab.id ? "border-orange-500 text-orange-600" : "border-transparent text-gray-600"
-              }`}
               onClick={() => setActiveTab(tab.id)}
+              className={`
+                relative px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200
+                ${activeTab === tab.id 
+                  ? 'text-orange-600 bg-orange-50' 
+                  : 'text-gray-600 hover:bg-gray-50'
+                }
+                group flex items-center gap-2
+              `}
             >
+              <span className="transform transition-transform group-hover:scale-110">
+                {tab.icon}
+              </span>
               {tab.label}
+              
+              {/* Active indicator */}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
+              
+              {/* Hover indicator */}
+              <div className={`
+                absolute bottom-0 left-0 right-0 h-0.5 bg-orange-300 transform scale-x-0 transition-transform
+                group-hover:scale-x-100 ${activeTab === tab.id ? 'opacity-0' : 'opacity-100'}
+              `} />
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="p-4"
+        >
           {activeTab === "personal" && (
             <div className="space-y-4">
               <div>
@@ -91,25 +125,83 @@ const Profile = () => {
           )}
 
           {activeTab === "history" && (
-            <div>
-              <p className="text-gray-600 mb-4">Your recent activity will appear here.</p>
-              <ul className="space-y-2 text-gray-700">
-                <li className="flex items-center space-x-2">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  <span>Logged in from a new device - March 25, 2025</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  <span>Changed password - March 20, 2025</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  <span>Updated profile picture - March 15, 2025</span>
-                </li>
-              </ul>
+            <div className="overflow-x-auto p-4">
+              {/* Add search and filter controls */}
+              <div className="mb-4 flex gap-4">
+                <input
+                  type="text"
+                  placeholder="Search bookings..."
+                  className="p-2 border rounded-lg w-64 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+                <select className="p-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                  <option value="all">All Status</option>
+                  <option value="completed">Completed</option>
+                  <option value="pending">Pending</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <table className="min-w-full border border-gray-200 shadow-md rounded-lg">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="py-3 px-4 border-b text-left">Booking ID</th>
+                    <th className="py-3 px-4 border-b text-left">Creation Time</th>
+                    <th className="py-3 px-4 border-b text-left">Username</th>
+                    <th className="py-3 px-4 border-b text-left">Payment Type</th>
+                    <th className="py-3 px-4 border-b text-left">Amount</th>
+                    <th className="py-3 px-4 border-b text-left">Status</th>
+                    <th className="py-3 px-4 border-b text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Sample booking rows - Replace with actual data from your backend */}
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-3 px-4 border-b">#BK12345</td>
+                    <td className="py-3 px-4 border-b">2024-03-15 14:30</td>
+                    <td className="py-3 px-4 border-b">John Doe</td>
+                    <td className="py-3 px-4 border-b">Credit Card</td>
+                    <td className="py-3 px-4 border-b">$150.00</td>
+                    <td className="py-3 px-4 border-b">
+                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                        Completed
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 border-b">
+                      <button className="text-blue-500 hover:text-blue-700 mr-2">View</button>
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-3 px-4 border-b">#BK12346</td>
+                    <td className="py-3 px-4 border-b">2024-03-14 09:15</td>
+                    <td className="py-3 px-4 border-b">John Doe</td>
+                    <td className="py-3 px-4 border-b">PayPal</td>
+                    <td className="py-3 px-4 border-b">$75.00</td>
+                    <td className="py-3 px-4 border-b">
+                      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
+                        Pending
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 border-b">
+                      <button className="text-blue-500 hover:text-blue-700 mr-2">View</button>
+                      <button className="text-red-500 hover:text-red-700">Cancel</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Pagination controls */}
+              <div className="mt-4 flex justify-between items-center">
+                <div className="text-gray-600">
+                  Showing 1-2 of 2 bookings
+                </div>
+                <div className="flex gap-2">
+                  <button className="px-3 py-1 border rounded-lg disabled:opacity-50">Previous</button>
+                  <button className="px-3 py-1 border rounded-lg disabled:opacity-50">Next</button>
+                </div>
+              </div>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
