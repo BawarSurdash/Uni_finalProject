@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
+
+
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const Profile = () => {
     localStorage.removeItem('token');
     navigate('/login');
   };
+  
   
 
   const tabs = [

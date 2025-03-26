@@ -65,8 +65,16 @@ try{
 }   
  })
 
- router.get('/profile', (req, res) => {
-    res.json({ message: 'Profile route' });
- });
- 
+ router.get('/profile',verifyToken,async(req,res)=>{
+    try{
+        const db=await connectToDatabase();
+        const[rows]=await db.query('SELECT * FROM users WHERE id=?',[req.userId]);
+        if(rows.length===0){
+            return res.status(404).json({ message: 'User not found' });
+        }
+        return res.status(201).json({user:rows[0]});
+    }catch(error){
+        res.status(500).json({ message: 'Internal server error' });
+    }
+ })
 export default router;

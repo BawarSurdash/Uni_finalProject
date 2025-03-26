@@ -10,29 +10,38 @@ import Signup from './Components/signup'
 import Login from './Components/login'
 import Dashboard from './Components/dashboard'
 import Profile from './Components/profile'
-function App() {
 
+// Add ProtectedRoute component
+const ProtectedRoute = () => {
+  const isAuthenticated = localStorage.getItem('token'); // or your auth check method
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
+};
+
+function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-
-     
-            <Route path='/' element={<Home />} />
-            
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
+          {/* Public Routes */}
+          <Route path='/' element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
             <Route path='/services' element={<Services />} />
             <Route path='/events' element={<Event />} />
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
-       
-
+          </Route>
         </Routes>
-
-
       </BrowserRouter>
     </>
   )
